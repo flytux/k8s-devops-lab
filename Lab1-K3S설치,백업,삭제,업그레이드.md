@@ -123,7 +123,7 @@ $ curl -LO https://github.com/k3s-io/k3s/releases/download/v1.31.1%2Bk3s1/k3s
 $ chmod +x k3s && mv k3s /usr/local/bin
 
 # k3s 서비스 기동
-$ systemctl start K3S
+$ systemctl start k3s.service
 
 # kubernetes 버전 확인
 $ kubectl get nodes
