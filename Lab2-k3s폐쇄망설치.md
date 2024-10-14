@@ -13,7 +13,7 @@ $ docker pull nginx
 
 k3s airgapped 설치를 위한 준비 파일은 다음과 같다.
 
-1) install 스크립트\
+1) install 스크립트
 ```
 $ curl -sfL https://get.k3s.io > install.sh
 ```
