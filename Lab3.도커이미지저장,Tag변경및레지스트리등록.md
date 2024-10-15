@@ -54,7 +54,7 @@ ingress:
         - docker.local
 EOF
 
-$ helm install docker-registry -f values.yaml twuni/docker-registry -n registry
+$ helm upgrade -i docker-registry -f values.yaml twuni/docker-registry -n registry
 
 # 인증서 CA root 복사 Ubuntu
 $ cp docker.key docker.crt /usr/local/share/ca-certificates/
