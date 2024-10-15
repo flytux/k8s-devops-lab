@@ -108,6 +108,6 @@ $ INSTALL_K3S_SKIP_DOWNLOAD=true K3S_URL=https://$master_ip:6443 K3S_TOKEN=$toke
 ##### 1.5 k3S 설치 - 두번째 마스터 노드 
 
 ```
-# 필요한 파일을 노드에 복사하고 k3s 설치 시, K3S 서버를 argument로 추가하면 k3s-server 실행 = 마스터 노드 추가가
+# 필요한 파일을 노드에 복사하고 k3s 설치 시, K3S 서버를 argument로 추가하면 k3s-server 실행 = 마스터 노드 추가
 $ INSTALL_K3S_SKIP_DOWNLOAD=true K3S_TOKEN=$token ./install.sh --server=https://$master_ip:6443
 ```
