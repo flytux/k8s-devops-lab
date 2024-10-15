@@ -94,7 +94,7 @@ $ nerdctl login docker.local # admin / 1
 ##### 3. 이미지 목록 확인
 
 ```
-nerctl images --format "{{.Repositorty}}:{{.Tag}}" > images.txt
+nerdctl images --format "{{.Repositorty}}:{{.Tag}}" > images.txt
 ```
 
 ##### 4. Tag가 없는 이미지는 확인하여 Tag 작성
