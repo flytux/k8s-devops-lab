@@ -4,6 +4,7 @@
 # k3s가 설치된 상태에는 ctr, crictl 을 이용하여 이미지 조회가 가능
 # nerdctl을 설치하여 도커와 동일한 명령어 실행
 
+$ mkdir -p /etc/nerdctl
 $ cat << EOF > /etc/nerdctl/nerdctl.toml
 address        = "unix:///run/k3s/containerd/containerd.sock"
 namespace      = "k8s.io"
@@ -20,10 +21,74 @@ $ nerdctl images
 ##### 2. 도커레지스트리 설치
 
 ```
-# TO-DO
 # helm 설치
-# 인증서 생성
-# containerd에 registry 인증서 등록
+$ curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+
+# k9s 설치 및 kubeconfig 설정
+$ wget https://github.com/derailed/k9s/releases/download/v0.27.4/k9s_Linux_amd64.tar.gz
+$ tar xvf k9s_Linux_amd64.tar.gz && chmod +x k9s && sudo mv k9s /usr/local/bin
+$ cp /etc/rancher/k3s/k3s.yaml ~/.kube/config
+
+# 도커레지스트리용 인증서 생성
+$ openssl req -x509 -newkey rsa:4096 -sha256 -days 3650 -nodes \
+  -keyout docker.key -out docker.crt -subj '/CN=docker.local' \
+  -addext 'subjectAltName=DNS:docker.local'
+
+# 인증서 시크릿 생성
+$ kubectl create ns registry
+$ kubectl create secret tls docker-tls --key docker.key --cert docker.crt -n registry
+
+# docker registry 설치
+$ helm repo add twuni https://helm.twun.io
+
+# ingress 설정
+cat << EOF >> values.yaml
+ingress:
+  enabled: true
+  hosts:
+    - docker.local
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"    
+  tls:
+    - secretName: docker-tls
+      hosts:
+        - docker.local
+
+$ helm install docker-registry -f values.yaml twuni/docker-registry -n registry
+
+# 인증서 CA root 복사 Ubuntu
+$ cp docker.key docker.crt /usr/local/share/ca-certificates/
+$ update-ca-certificates
+
+# 인증서 CA root 복사 RHEL
+$ cp docker.key docker.crt /etc/pki/ca-trust/source/anchors/
+$ update-ca-trust
+
+$ cat << EOF >> /etc/hosts
+192.168.122.11 docker.local # Ingress IP
+EOF
+
+cat << EOF > /etc/rancher/k3s/registries.yaml
+mirrors:
+  docker.io:
+    endpoint:
+      - "https://docker.local"
+configs:
+  "docker.local":
+    auth:
+      username: admin # this is the registry username
+      password: q # this is the registry password
+    tls:
+      cert_file: /usr/local/share/ca-certificates/docker.crt # Ubuntu
+      key_file: /usr/local/share/ca-certificates/docker.key  # Ubuntu
+EOF
+
+$ systemctl restart k3s-server # k3s-agent (워커노드)
+
+# Docker registry 로그인
+$ nerdctl login docker.local # admin / 1
+
 ```
 
 
