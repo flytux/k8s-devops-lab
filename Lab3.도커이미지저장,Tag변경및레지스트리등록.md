@@ -90,6 +90,10 @@ $ nerdctl login docker.local # admin / 1
 
 ```
 
+#### 폐쇄망 내 클러스터 설치 시
+- **필요한 도커 이미지를 외부에서 설치하여 확인하고**, 
+- **Docker Save 명령을 통해 저장하여 반입한 후**,
+- **Docker Load, Tag, Push 명령어를 이용하여 내부망 도커 레지스트리에 등록한다**.
 
 ##### 3. 이미지 목록 확인
 
@@ -99,11 +103,17 @@ nerdctl images --format "{{.Repository}}:{{.Tag}}" | grep -v none > images.txt
 
 ##### 4. Tag가 없는 이미지는 확인하여 Tag 작성
 
+```
+# image tag가 none인 경우
+registry  <none>   dbaa3e69f563    11 minutes ago    linux/amd64    25.4 MiB     9.3 MiB
 
-##### 5. 비어있는 이미지 가져오기
+$ nerdctl tag dbaa3e69f563 registry:latest
+```
+
+##### 5. 이미지 목록에서 도커 이미지 가져오기
 
 ```
-cat images.txt | while read line
+$ cat images.txt | while read line
 do
 nerdctl pull ${line}
 done
@@ -112,22 +122,40 @@ done
 ##### 6. 이미지 tar로 저장
 
 ```
-nerdctl images | grep -v REPOSITORY | grep -v none | while read line
+$ nerdctl images | grep -v REPOSITORY | grep -v none | while read line
 do
   filename=$( echo "$line" | awk '{print $1":"$2".tar"}' | sed 's|:|@|g ; s|/|+|g' )
   option=$( echo "$line" | awk '{print $1":"$2}' )
   echo "nerdctl save ${option} -o ${filename}"
   nerdctl save "${option}" -o "${filename}"
 done
+
+# 다음 에러 발생 시
+# FATA[0000] failed to get reader: content digest sha256:2b1781f831: not found
+# 오류난 이미지를
+# nerdctl pull 컨테이너이미지:태그 --all-platforms 를 실행하여 전체 이미지 레이어를 가져온 후 저장을 다시 실행
 ```
 
 ##### 7. 이미지 로드
 
 ```
-ls *.tar | while read line
+$ ls *.tar | while read line
 do
    filename=$( echo "$line" )
    echo "nerdctl load -i ${filename}"
    nerdctl load -i "${filename}"
 done
+```
+
+##### 8. 이미지 Tag 작성 및 이미지 Push
+
+```
+$ cat images.txt | while read line
+do
+nerdctl tag ${line} docker.local/${line}
+nerdctl push docker.local/${line}
+done
+
+# 이미지 조회
+$ curl -v docker.local/v2/_catalog
 ```
