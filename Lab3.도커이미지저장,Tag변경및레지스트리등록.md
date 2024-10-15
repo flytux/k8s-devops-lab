@@ -115,7 +115,7 @@ $ nerdctl tag dbaa3e69f563 registry:latest
 ```
 $ cat images.txt | while read line
 do
-nerdctl pull ${line}
+  nerdctl pull ${line}
 done
 ```
 
@@ -141,9 +141,9 @@ done
 ```
 $ ls *.tar | while read line
 do
-   filename=$( echo "$line" )
-   echo "nerdctl load -i ${filename}"
-   nerdctl load -i "${filename}"
+  filename=$( echo "$line" )
+  echo "nerdctl load -i ${filename}"
+  nerdctl load -i "${filename}"
 done
 ```
 
@@ -152,8 +152,8 @@ done
 ```
 $ cat images.txt | while read line
 do
-nerdctl tag ${line} docker.local/${line}
-nerdctl push docker.local/${line}
+  nerdctl tag ${line} docker.local/${line}
+  nerdctl push docker.local/${line}
 done
 
 # 이미지 조회
