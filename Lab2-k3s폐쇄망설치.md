@@ -102,12 +102,12 @@ $ export master_ip=192.168.122.11
 $ export token=$(ssh node-01 cat /var/lib/rancher/k3s/server/token)
 
 # K3S 마스터 노드에 워커 노드 추가, K3S_URL을 환경변수로 설정하면 Agent 실행
-$ K3S_URL=https://$master_ip:6443 K3S_TOKEN=$token ./install.sh
+$ INSTALL_K3S_SKIP_DOWNLOAD=true K3S_URL=https://$master_ip:6443 K3S_TOKEN=$token ./install.sh
 ```
 
 ##### 1.5 k3S 설치 - 두번째 마스터 노드 
 
 ```
 # 필요한 파일을 노드에 복사하고 k3s 설치 시, K3S 서버를 argument로 추가하면 서버 실행
-$ K3S_TOKEN=$token ./install.sh --server=https://$master_ip:6443
+$ INSTALL_K3S_SKIP_DOWNLOAD=true K3S_TOKEN=$token ./install.sh --server=https://$master_ip:6443
 ```
