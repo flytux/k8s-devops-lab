@@ -42,18 +42,17 @@ $ kubectl create secret tls docker-tls --key docker.key --cert docker.crt -n reg
 $ helm repo add twuni https://helm.twun.io
 
 # ingress 설정
-cat << EOF >> values.yaml
+$ cat << EOF > values.yaml
 ingress:
   enabled: true
+  className: traefik
   hosts:
-    - docker.local
-  annotations:
-    kubernetes.io/ingress.class: nginx
-    nginx.ingress.kubernetes.io/proxy-body-size: "0"    
+    - docker.local   
   tls:
     - secretName: docker-tls
       hosts:
         - docker.local
+EOF
 
 $ helm install docker-registry -f values.yaml twuni/docker-registry -n registry
 
