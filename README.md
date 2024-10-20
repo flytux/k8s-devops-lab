@@ -21,5 +21,5 @@
 
 #### Part 4. 인프라 자동화
   - Lab13. 테라폼 설치
-  - Lab14. 테라폼 Kubernetes  설치 - K3s, Kubeadm, RKE2
+  - Lab14. 테라폼 Kubernetes  설치 - k3s, kubeadm, RKE2
   - Lab15. 테라폼 DEVOPS 툴체인 설치
