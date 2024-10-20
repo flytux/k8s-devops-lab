@@ -9,10 +9,6 @@
 #### Part 2. DEVOPS 설치
   - Lab5. DEVOPS 툴체인 설치
   - Lab6. DEVOPS 파이프라인 구성 (Tekton, Gitlab, Argo Workflow)
-    - Registry 사설 인증서 설정
-	- 넥서스 내부망 구성
-	- 파이프라인 웹훅 연동
-	- 파이프라인런 정기 삭제
 
 #### Part 3. 클러스터 운영 관리
   - Lab7. 랜처 설치 및 클러스터 연동 구성 (폐쇄망)
